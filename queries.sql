@@ -1,39 +1,42 @@
--- 1. Liste des véhicules disponibles
-SELECT * FROM vehicule WHERE statut = 'disponible';
+SELECT *
+FROM vehicule
+WHERE statut = 'disponible';
 
--- 2. Liste des véhicules avec leur type
 SELECT v.id_vehicule, t.libelle AS type_vehicule
 FROM vehicule v
 JOIN type_vehicule t ON v.id_type = t.id_type;
 
--- 3. Nombre de véhicules par type
 SELECT t.libelle, COUNT(*) AS nb_vehicules
 FROM vehicule v
 JOIN type_vehicule t ON v.id_type = t.id_type
 GROUP BY t.libelle;
 
--- 4. Locations d’un client
-SELECT * FROM location WHERE id_client = 1;
+SELECT r.id_reservation, r.date_reservation, c.nom, c.prenom
+FROM reservation r
+JOIN client c ON r.id_client = c.id_client;
 
--- 5. Paiements supérieurs à 50€
-SELECT * FROM paiement WHERE montant > 50;
+SELECT l.id_location, l.date_debut, l.date_fin, c.nom, c.prenom
+FROM location l
+JOIN reservation r ON l.id_reservation = r.id_reservation
+JOIN client c ON r.id_client = c.id_client;
 
--- 6. Créer une vue des véhicules disponibles
-CREATE VIEW vue_vehicules_disponibles AS
-SELECT * FROM vehicule WHERE statut = 'disponible';
+SELECT p.id_paiement, p.montant, p.date_paiement, c.nom, c.prenom
+FROM paiement p
+JOIN location l ON p.id_location = l.id_location
+JOIN reservation r ON l.id_reservation = r.id_reservation
+JOIN client c ON r.id_client = c.id_client;
 
--- 7. Véhicules de type "Voiture" (sous-requête)
-SELECT * FROM vehicule
-WHERE id_type = (SELECT id_type FROM type_vehicule WHERE libelle = 'Voiture');
+SELECT *
+FROM vehicule
+WHERE statut = 'loue';
 
--- 8. Moyenne du tarif horaire des types de véhicules
-SELECT AVG(tarif_horaire) AS tarif_moyen FROM type_vehicule;
-
--- 9. Clients inscrits ce mois
-SELECT * FROM client 
-WHERE EXTRACT(MONTH FROM date_inscription) = EXTRACT(MONTH FROM CURRENT_DATE);
-
--- 10. Véhicules avec leur station
-SELECT v.id_vehicule, v.statut, s.nom AS station
+SELECT v.id_vehicule, s.nom AS station
 FROM vehicule v
 JOIN station s ON v.id_station = s.id_station;
+
+SELECT DISTINCT c.id_client, c.nom, c.prenom
+FROM client c
+JOIN reservation r ON c.id_client = r.id_client;
+
+SELECT COUNT(*) AS total_paiements
+FROM paiement;
