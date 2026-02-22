@@ -1,4 +1,5 @@
--- Création de la table CLIENT
+DROP TABLE IF EXISTS maintenance, paiement, location, reservation, borne_recharge, vehicule, station, type_vehicule, technicien, client CASCADE;
+
 CREATE TABLE client (
     id_client SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -8,7 +9,6 @@ CREATE TABLE client (
     date_inscription DATE NOT NULL
 );
 
--- Création de la table TECHNICIEN
 CREATE TABLE technicien (
     id_technicien SERIAL PRIMARY KEY,
     nom VARCHAR(100),
@@ -16,14 +16,12 @@ CREATE TABLE technicien (
     specialite VARCHAR(100)
 );
 
--- Création de la table TYPE_VEHICULE
 CREATE TABLE type_vehicule (
     id_type SERIAL PRIMARY KEY,
     libelle VARCHAR(50) NOT NULL,
     tarif_horaire DECIMAL(6,2) NOT NULL
 );
 
--- Création de la table STATION
 CREATE TABLE station (
     id_station SERIAL PRIMARY KEY,
     nom VARCHAR(100),
@@ -31,7 +29,6 @@ CREATE TABLE station (
     ville VARCHAR(100)
 );
 
--- Création de la table VEHICULE
 CREATE TABLE vehicule (
     id_vehicule SERIAL PRIMARY KEY,
     statut VARCHAR(30) CHECK (statut IN ('disponible','loue','maintenance')),
@@ -40,15 +37,6 @@ CREATE TABLE vehicule (
     id_station INT REFERENCES station(id_station)
 );
 
--- Création de la table BORNE_RECHARGE
-CREATE TABLE borne_recharge (
-    id_borne SERIAL PRIMARY KEY,
-    puissance_kw INT,
-    statut VARCHAR(30),
-    id_station INT REFERENCES station(id_station)
-);
-
--- Création de la table RESERVATION
 CREATE TABLE reservation (
     id_reservation SERIAL PRIMARY KEY,
     date_reservation DATE,
@@ -58,17 +46,16 @@ CREATE TABLE reservation (
     id_vehicule INT REFERENCES vehicule(id_vehicule)
 );
 
--- Création de la table LOCATION
 CREATE TABLE location (
     id_location SERIAL PRIMARY KEY,
     date_debut DATE,
     date_fin DATE,
     cout_total DECIMAL(8,2),
     id_client INT REFERENCES client(id_client),
-    id_vehicule INT REFERENCES vehicule(id_vehicule)
+    id_vehicule INT REFERENCES vehicule(id_vehicule),
+    id_reservation INT REFERENCES reservation(id_reservation)
 );
 
--- Création de la table PAIEMENT
 CREATE TABLE paiement (
     id_paiement SERIAL PRIMARY KEY,
     date_paiement DATE,
@@ -77,7 +64,6 @@ CREATE TABLE paiement (
     id_location INT REFERENCES location(id_location)
 );
 
--- Création de la table MAINTENANCE
 CREATE TABLE maintenance (
     id_maintenance SERIAL PRIMARY KEY,
     date_intervention DATE,
