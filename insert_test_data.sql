@@ -15,3 +15,4 @@ INSERT INTO paiement (date_paiement, montant, moyen_paiement, id_location) VALUE
 SELECT * FROM client;
 SELECT * FROM vehicule;
 SELECT * FROM location;
+
